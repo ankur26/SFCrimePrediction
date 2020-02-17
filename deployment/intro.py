@@ -4,17 +4,17 @@ import pandas as pd
 from catboost import *
 import pickle
 #print("Imports done")
-@st.cache(persist=True)
+@st.cache()
 def load_model():
     model = CatBoost()
     model.load_model(fname = "C:\\Users\\Ankur Bhatkalkar\\Documents\\GitHub\\SFCrimePrediction\\models\\final_model")
     return model
-@st.cache(persist=True)
+@st.cache()
 def load_location():
     data = pd.read_csv("C:\\Users\\Ankur Bhatkalkar\\Documents\\GitHub\\SFCrimePrediction\\deployment\\location.csv",keep_default_na=False)
     return data.drop("Unnamed: 0",axis=1)
 
-@st.cache(persist=True)
+@st.cache()
 def load_max_min_location():
     file = open("C:\\Users\\Ankur Bhatkalkar\\Documents\\GitHub\\SFCrimePrediction\\deployment\\location_dict","rb")
     return pickle.load(file)
