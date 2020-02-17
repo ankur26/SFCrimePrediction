@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from catboost import *
 import json
+from sklearn.metrics.pairwise import euclidean_distances
 #print("Imports done")
 @st.cache()
 def load_model():
@@ -20,14 +21,22 @@ def load_max_min_location():
     return json.load(file)
 
 st.title("Know what crimes happen in your area!!")
-st.header("Using San Francisco Open Crime Data this a model designed to predict which crimes are most likely to happen depending on factors used in the dataset")
+st.header("Using San Francisco Open Crime Data this model has been trained designed to predict which crimes are most likely to happen depending on factors used in the dataset")
 model = load_model()
 locations = load_location()
 location_dict= load_max_min_location()
 st.subheader("Enter the parameters")
-st.slider(label="Longitude",min_value = float(location_dict["min_longitude"][0]),
-          value=float(location_dict["min_longitude"][0]),max_value = float(location_dict["max_longitude"][0]),step=0.0001,key="Longitude")
+longitude = st.slider(label="Longitude",min_value = float(location_dict["min_longitude"]),
+          value=float(location_dict["min_longitude"]),
+          max_value = float(location_dict["max_longitude"]),
+          step=0.0001,key="Longitude",
+          format = "%2.4f")
 
-st.slider(label="Latitude",min_value = float(location_dict["min_latitude"][0]),
-          value=float(location_dict["min_latitude"][0]),max_value = float(location_dict["max_latitude"][0]),step=0.0001,key="Latitude")
+latitude = st.slider(label="Latitude",min_value = float(location_dict["min_latitude"]),
+          value=float(location_dict["min_latitude"]),
+          max_value = float(location_dict["max_latitude"]),
+          step=0.0001,key="Latitude",
+          format = "%2.4f")
 
+time = st.time_input(label="Time",key="Time")
+date = st.date_input(label="Date",key="Date")
