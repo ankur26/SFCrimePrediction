@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np 
 import pandas as pd
 from catboost import *
-import pickle
+import json
 #print("Imports done")
 @st.cache()
 def load_model():
@@ -16,8 +16,8 @@ def load_location():
 
 @st.cache()
 def load_max_min_location():
-    file = open("C:\\Users\\Ankur Bhatkalkar\\Documents\\GitHub\\SFCrimePrediction\\deployment\\location_dict","rb")
-    return pickle.load(file)
+    file = open("C:\\Users\\Ankur Bhatkalkar\\Documents\\GitHub\\SFCrimePrediction\\deployment\\location_dict.txt","r")
+    return json.load(file)
 
 st.title("Know what crimes happen in your area!!")
 st.header("Using San Francisco Open Crime Data this a model designed to predict which crimes are most likely to happen depending on factors used in the dataset")
