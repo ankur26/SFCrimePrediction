@@ -9,9 +9,9 @@ My focus for this project is to deploy a live model which serves a front end giv
 The progress of the project currently is as follows:
 * Part 1: Initial Data Exploration and Feature Engineering-<a href="https://github.com/ankur26/SFCrimePrediction/blob/master/notebooks/01_data_exploration_and_feature_engineering.ipynb">**link**<a>
 * Part 2: Model selection and hyperparameter optimization-<a href="https://github.com/ankur26/SFCrimePrediction/blob/master/notebooks/02_model_creation.ipynb">**link**<a>
-* Part 3: Model deployment process. <a href = "https://github.com/ankur26/SFCrimePrediction/blob/master/deployment/intro.py"> Link to streamlit code </a>
+* Part 3: Model deployment process. <a href = "https://github.com/ankur26/SFCrimePrediction/blob/master/deployment/intro.py">**Link to streamlit code**</a>
   
-**App Link** : <a href ="http://52.144.46.109:8501>**Link**</a>
+**App Link** : <a href ="http://52.144.46.109:8501">**Link**</a>
 Please use the server in moderation as it costs me money and if there are any problems report it on my
 <a href="mailto:ab7869@nyu.edu">email</a> or message me on <a href="https://www.linkedin.com/in/ankur-bhatkalkar">LinkedIn</a> 
 ##Observations :
