@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from catboost import *
 import json
-from sklearn.metrics.pairwise import euclidean_distances
+import altair as alt
 #print("Imports done")
 @st.cache()
 def load_model():
@@ -37,21 +37,41 @@ latitude = st.slider(label="Latitude",min_value = float(location_dict["min_latit
           max_value = float(location_dict["max_latitude"]),
           step=0.0001,key="Latitude",
           format = "%2.4f")
-
+df = pd.DataFrame(np.array([longitude,latitude]).reshape(1,2),columns=["lon","lat"])
+st.map(df,zoom=12)
 time = st.time_input(label="Time",key="Time")
 date = st.date_input(label="Date",key="Date")
 
 locations["distances"] = ((locations["X"]-longitude)**2 + (locations["Y"]-latitude)**2)**0.5
 st.write("The closest estimated area and paramters are")
-min_distance_df = locations.iloc[locations["distances"].argmin()]
-st.dataframe(min_distance_df)
-min_distance_df["Day"] = date.day
-min_distance_df["Year"] = date.year
-min_distance_df["Month"] = date.month
+min_distance_df = pd.DataFrame([locations.iloc[locations["distances"].argmin()]],columns=locations.columns.values)
+st.dataframe(min_distance_df.head())
+min_distance_df["Day"] = int(date.day)
+min_distance_df["Year"] = int(date.year)
+min_distance_df["Month"] = int(date.month)
 min_distance_df["DayOfWeek"] = date.strftime("%A").upper()
-min_distance_df["Hour"] = time.hour
-min_distance_df["Minute"] = time.minute
-st.write("Updating it with date gives us")
-st.dataframe(min_distance_df)
-st.write("With our dataframe ready to predict we can make an inference")
-predictions = pd.DataFrame(model.predict())
+min_distance_df["Hour"] = int(time.hour)
+min_distance_df["Minute"] = int(time.minute)
+min_distance_df["block_present"] = min_distance_df["block_present"].astype(int)
+min_distance_df["block_number"] = min_distance_df["block_number"].astype(int)
+min_distance_df["X"] = min_distance_df["X"].astype(float)
+min_distance_df["Y"] = min_distance_df["Y"].astype(float)
+min_distance_df.drop("distances",axis=1,inplace=True)
+st.write("Updating it with the other parameters gives us")
+st.dataframe(min_distance_df.head())
+st.write("With our dataframe ready here is the inferred output")
+
+features = min_distance_df.dtypes.reset_index()
+cat_features = features.loc[features[0] == "object","index"].values
+test = Pool(data = min_distance_df,cat_features=cat_features)
+
+predictions = pd.DataFrame(np.array(model.predict(test,prediction_type="Probability")).T*100,columns=["Percentage"])
+predictions["Crime"] = model.classes_
+predictions["Crime"] = predictions["Crime"].astype(str)
+predictions_sorted = predictions.sort_values("Percentage",ascending=False)
+st.dataframe(predictions_sorted)
+st.write("You can see the top 5 crimes happening are in the "+", ".join(predictions_sorted["Crime"][:5].values)+" Category")
+st.write("Here is graph indicating all the crime percentages in a sorted format")
+c = alt.Chart(predictions_sorted).mark_bar().encode(x=alt.X("Crime",sort="-y"),y="Percentage")
+st.altair_chart(c)
+
